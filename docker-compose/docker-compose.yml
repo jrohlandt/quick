@@ -44,6 +44,8 @@ services:
             - quick_mongo:/data/db
         ports:
             - 27017:27017
+        networks:
+            - quick
 
     redis:
         image: redis:5.0.7
