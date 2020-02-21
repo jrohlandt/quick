@@ -1,0 +1,74 @@
+version: "3.7"
+
+services:
+    app:
+        build:
+            args:
+                user: ${APP_USER}
+                uid: 1000
+            context: ../
+            dockerfile: ./docker-compose/php/Dockerfile
+        image: quick_php
+        container_name: quick_php_app
+        restart: unless-stopped
+        working_dir: /var/www
+        volumes:
+            - ../:/var/www
+        networks:
+            - quick
+
+    db:
+        image: mysql:5.7
+        container_name: quick_mysql_db
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE} # docker fetches these from .env file in same dir as docker-compose.yml file
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        volumes:
+#            - ./mysql:/docker-entrypoint-initdb.d  #mysql image will automatically import .sql files placed in the /docker-entrypoint-initdb.d directory
+            - quick_mysql:/var/lib/mysql
+        ports:
+            - 3306:3306
+        networks:
+            - quick
+
+    mongo:
+        image: mongo:4.2-bionic
+        container_name: quick_mongo_db
+        restart: unless-stopped
+        volumes:
+            - quick_mongo:/data/db
+        ports:
+            - 27017:27017
+
+    redis:
+        image: redis:5.0.7
+        container_name: quick_redis
+        networks:
+            - quick
+        ports:
+            - 6379:6379
+
+    nginx:
+        image: nginx:1.17-alpine
+        container_name: quick_nginx
+        restart: unless-stopped
+        ports: 
+            - 8000:80
+        volumes: 
+            - ../:/var/www
+            - ./nginx:/etc/nginx/conf.d
+        networks:
+            - quick
+
+networks:
+    quick:
+        driver: bridge
+
+volumes:
+    quick_mysql:
+    quick_mongo:
