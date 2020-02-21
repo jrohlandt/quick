@@ -1,3 +1,5 @@
+Quick docker container for prototyping with Laravel. Includes laravel-mongodb, MySQL and Redis.
+
 ### Installation:
 
 1. Pull this project.
