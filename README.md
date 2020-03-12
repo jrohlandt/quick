@@ -2,7 +2,7 @@ Quick docker container for prototyping with Laravel. Includes laravel-mongodb, M
 
 ### Installation:
 
-1. Pull this project.
+1. Clone this project.
 2. copy .env.example to .env
 3. copy ./docker-compose/.env.example to ./docker-compose/.env
 4. Then cd into ./docker-compose and run the following commands:
